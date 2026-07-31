@@ -1,57 +1,329 @@
-# Speech Emotion Recognition (SER) using LSTM and RAVDESS
+# 🎙️ Real-Time Speech Emotion Recognition using CNN-BiLSTM
 
-This repository implements a Deep Learning solution for Speech Emotion Recognition (SER). The project focuses on classifying human emotions from audio recordings using the RAVDESS dataset and a hybrid CNN-BiLSTM architecture.
+A deep learning based Speech Emotion Recognition (SER) system capable of identifying human emotions from speech signals using hybrid acoustic features and a CNN-BiLSTM architecture.
 
-## Project Structure
+The project was developed in two phases:
 
-RAVDESS/: The core dataset containing speech audio files (.wav).
-RAVDESS data distribution.ipynb: Exploratory Data Analysis (EDA) notebook focusing on class balance and dataset statistics.
-SER 01.ipynb: LSTM Model with MFCC as the only feature extraction technique - 50.56% test accuracy
-SER 02.ipynb: Hybrid CNN-BiLSTM Model with Hybrid features (MFCC, Chroma, RMS, Centroid) - 77.78% test accuracy
-SER 03.ipynb: Hybrid CNN-BiLSTM Model with Hybrid features (MFCC, Delta-MFCC, Delta-Delta-MFCC, Chroma, RMS, Centroid, Bandwidth, Rolloff, Zero Crossing Rate) - 82.64% test accuracy
+* **Phase 1:** Single-dataset learning using the RAVDESS emotional speech corpus.
+* **Phase 2:** Cross-lingual multi-dataset learning using 8 public emotional speech datasets containing over **50,000 speech samples**.
 
-## Getting Started
+The final model achieved **88.82% classification accuracy** across seven emotion categories.
 
-1. Prerequisites
-Ensure you have Python 3.x installed. You will need the following libraries:
+---
 
-pip install librosa numpy pandas matplotlib seaborn scikit-learn tensorflow
+# 📌 Supported Emotions
 
-2. Dataset
-This project uses the RAVDESS (Ryerson Audio-Visual Database of Emotional Speech and Song).
-Emotions included: Neutral, Calm, Happy, Sad, Angry, Fearful, Disgust, Surprised.
-Format: 16-bit, 48kHz .wav files.
+* Angry
+* Disgust
+* Fear
+* Happy
+* Neutral
+* Sad
+* Surprise
 
-## Implementation Steps
+---
 
-Step 1: Data Preprocessing & EDA
-Visualization: Analyzing waveform patterns and spectrograms for different emotions.
-Cleaning: Removing silence and normalizing audio length.
-Distribution: Checking the frequency of each emotion label to ensure a balanced training set.
+# 📊 Project Evolution
 
-Step 2: Feature Extraction
-The most critical step involves converting raw audio into a numerical format the model can understand:
-MFCCs (Mel-Frequency Cepstral Coefficients): Extracted using librosa.
-Scaling: Using StandardScaler to normalize feature values.
-Encoding: Converting categorical emotion labels into numerical vectors using to_categorical.
+| Version            | Dataset    | Accuracy |
+| ------------------ | ---------- | -------: |
+| SER-01             | RAVDESS    |   50.56% |
+| SER-02             | RAVDESS    |   77.78% |
+| SER-03             | RAVDESS    |   82.64% |
+| Multi-Dataset SER  | 8 Datasets |   88.68% |
+| Multi-Dataset SER2 | 8 Datasets |   88.82% |
 
-Step 3: Model Architecture
-The system utilizes a sophisticated TensorFlow/Keras pipeline:
-Conv1D Layers: To extract spatial/spectral features from the audio signal.
-Bidirectional LSTM: To capture the temporal dependencies (how speech changes over time).
-Dropout & BatchNormalization: To prevent overfitting and ensure stable training.
-Dense Output Layer: Softmax activation for multi-class classification.
+### Overall Improvement
 
-Step 4: Training & Optimization
-Callbacks: EarlyStopping to halt training when accuracy plateaus and ReduceLROnPlateau to fine-tune the learning rate.
-Validation: Splitting data into Training and Testing sets (80/20) to validate performance on unseen data.
+**50.56% → 88.82%**
 
-Step 5: Evaluation
-Performance is assessed through:
-Accuracy/Loss Curves: Monitoring training vs. validation.
-Confusion Matrix: Identifying which emotions are most frequently confused.
-Classification Report: Precision, Recall, and F1-Score for every emotion category.
+Absolute Gain: **+38.26 percentage points**
 
-## Results
+Relative Improvement: **+75.7%**
 
-The model achieves a test accuracy of 82.64% by effectively combining the feature-extraction power of CNNs with the sequential memory of LSTMs.
+---
+
+# 🌍 Datasets Used
+
+## Phase 1
+
+* RAVDESS
+
+## Phase 2
+
+* RAVDESS
+* CREMA-D
+* TESS
+* SAVEE
+* EMO-DB
+* ESD
+* Hindi Emotional Speech Corpus
+* JL Emotional Speech Corpus
+
+### Dataset Scale
+
+| Metric           | Value                                     |
+| ---------------- | ----------------------------------------- |
+| Total Datasets   | 8                                         |
+| Languages        | English, Hindi, German, Chinese, Japanese |
+| Total Samples    | 50,000+                                   |
+| Training Samples | 40,972                                    |
+| Test Samples     | 10,244                                    |
+
+---
+
+# 🔬 Feature Engineering
+
+Each speech sample is converted into a fixed-length **128 × 77 feature representation**.
+
+## Acoustic Features
+
+| Feature Type       |  Count |
+| ------------------ | -----: |
+| MFCC               |     20 |
+| Delta MFCC         |     20 |
+| Delta-Delta MFCC   |     20 |
+| Chroma             |     12 |
+| RMS Energy         |      1 |
+| Spectral Centroid  |      1 |
+| Spectral Bandwidth |      1 |
+| Spectral Rolloff   |      1 |
+| Zero Crossing Rate |      1 |
+| **Total**          | **77** |
+
+---
+
+# 🏗️ Model Architecture
+
+Input: **128 × 77 Feature Matrix**
+
+```text
+Input
+  │
+  ▼
+Conv1D (256 Filters)
+  │
+  ▼
+MaxPooling1D
+  │
+  ▼
+BiLSTM (128 Units)
+  │
+  ▼
+Dropout
+  │
+  ▼
+BiLSTM (64 Units)
+  │
+  ▼
+Dropout
+  │
+  ▼
+Dense Layer
+  │
+  ▼
+Softmax (7 Emotions)
+```
+
+The CNN layer captures local acoustic patterns while the BiLSTM layers learn temporal emotional dynamics across speech sequences.
+
+---
+
+# 📈 Results
+
+## Final Performance
+
+| Metric         | Value   |
+| -------------- | ------- |
+| Accuracy       | 88.82%  |
+| Macro F1 Score | ~0.85   |
+| Classes        | 7       |
+| Datasets       | 8       |
+| Samples        | 50,000+ |
+
+---
+
+# 🖼️ Visualizations
+
+The repository includes:
+
+* Dataset Distribution Analysis
+* Feature Extraction Pipeline
+* CNN-BiLSTM Architecture Diagram
+* Confusion Matrix
+* Accuracy & Loss Curves
+
+Located inside:
+
+```text
+assets/
+├── architecture.png
+├── feature_extraction_pipeline.png
+├── dataset_distribution.png
+├── confusion_matrix.png
+└── accuracy_loss_curve.png
+```
+
+## Architecture
+
+![Architecture](assets/architecture.png)
+
+## Feature Extraction Pipeline
+
+![Feature Pipeline](assets/feature_extraction_pipeline.png)
+
+## Confusion Matrix
+
+![Confusion Matrix](assets/confusion_matrix.png)
+
+## Accuracy/Loss Curve
+
+![Accuracy/Loss Curve](assets/accuracy_loss_curve.png)
+
+## Dataset Distribution
+
+![Dataset Distribution](assets/dataset_distribution.png)
+
+---
+
+# 📂 Repository Structure
+
+```text
+Speech-Emotion-Recognition-using-CNN-BiLSTM/
+│
+├── README.md
+├── LICENSE
+├── requirements.txt
+├── .gitignore
+│
+├── notebooks/
+│   ├── phase1/
+│   │   ├── RAVDESS data distribution.ipynb
+│   │   ├── SER 01.ipynb
+│   │   ├── SER 02.ipynb
+│   │   └── SER 03.ipynb
+│   │
+│   └── phase2/
+│       ├── Data Loading.ipynb
+│       ├── SER.ipynb
+│       └── SER2.ipynb
+│
+├── assets/
+│   ├── architecture.png
+│   ├── feature_extraction_pipeline.png
+│   ├── dataset_distribution.png
+│   ├── confusion_matrix.png
+│   └── accuracy_loss_curve.png
+│
+├── results/
+│   ├── ravdess_results.md
+│   └── multidataset_results.md
+│
+└── data/
+    └── README.md
+```
+
+---
+
+# 🚀 Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/Iam-Jai-Kumar/Speech-Emotion-Recognition-using-CNN-BiLSTM
+cd Speech-Emotion-Recognition-using-CNN-BiLSTM
+```
+
+Install dependencies:
+
+```bash
+pip install -r requirements.txt
+```
+
+Launch Jupyter Notebook:
+
+```bash
+jupyter notebook
+```
+
+---
+
+# 📝 Reproducing Experiments
+
+### Phase 1 (RAVDESS)
+
+Run notebooks sequentially:
+
+```text
+RAVDESS data distribution.ipynb
+SER 01.ipynb
+SER 02.ipynb
+SER 03.ipynb
+```
+
+### Phase 2 (Multi-Dataset)
+
+Run notebooks sequentially:
+
+```text
+Data Loading.ipynb
+SER.ipynb
+SER2.ipynb
+```
+
+---
+
+# 🔮 Future Improvements
+
+* Wav2Vec2 Feature Embeddings
+* CNN-BiLSTM + Transformer Hybrid Models
+* Attention-Based Emotion Recognition
+* Conformer Architectures
+* Speaker-Independent Evaluation
+* Real-Time Streaming Inference
+* Model Quantization for Edge Deployment
+
+---
+
+# 📚 Citation & Dataset Acknowledgement
+
+This project uses several publicly available Speech Emotion Recognition datasets.
+
+All datasets remain the intellectual property of their respective creators, institutions, and authors. The datasets are used solely for academic and research purposes.
+
+If you use this project in research or derivative work, please cite the original dataset publications and follow their respective licenses and usage policies.
+
+Datasets used include:
+
+* RAVDESS
+* CREMA-D
+* TESS
+* SAVEE
+* EMO-DB
+* ESD
+* Hindi Emotional Speech Corpus
+* JL Emotional Speech Corpus
+
+---
+
+# 🛠️ Tech Stack
+
+* Python
+* TensorFlow / Keras
+* Librosa
+* NumPy
+* Pandas
+* Scikit-Learn
+* Matplotlib
+* Seaborn
+* Jupyter Notebook
+
+---
+
+# 👨‍💻 Author
+
+**Jai Kumar**
+
+B.Tech, Computer Science and Engineering
+
+National Institute of Technology Patna (NIT Patna)
