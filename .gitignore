@@ -1,0 +1,62 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Virtual Environments
+venv/
+env/
+.venv/
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# TensorFlow / Keras checkpoints
+*.h5
+*.keras
+*.ckpt
+
+# Model files
+models/
+saved_models/
+
+# Dataset folders
+data/raw/
+datasets/
+RAVDESS/
+
+
+# Numpy caches
+*.npy
+*.npz
+
+# Pickle files
+*.pkl
+
+# Logs
+logs/
+*.log
+
+# Temporary files
+temp/
+tmp/
+
+# TensorBoard
+runs/
+
+# Large artifacts
+*.zip
+*.tar
+*.gz
